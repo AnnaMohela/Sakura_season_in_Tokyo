@@ -11,9 +11,6 @@ import numpy as np
 import os
 #%%
 
-# tokyo_data = pd.DataFrame((array),columns=["date","temperature", "flower_status"])
-
-# data_2010=np.array((["2010/3/1",3,1],[4,5,6]))
 
 def make_dates(year_start, year_end):
     dates=[]
