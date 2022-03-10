@@ -7,7 +7,7 @@ Created on Thu Mar 10 12:03:38 2022
 from SakuraNN_refactored import *
 from sklearn.metrics import confusion_matrix
 import matplotlib.pyplot as plt
-from Sakura_Refactored import make_start_full_scatter
+from Tokyo_SakuraNN import make_start_full_scatter
 import os
 #%%
 
