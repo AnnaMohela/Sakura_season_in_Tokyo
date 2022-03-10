@@ -90,7 +90,44 @@ def make_model_nn_():
 	          metrics=['accuracy'])
     return model_nn
 
+def plot_confusion_matrix(cm, class_names, title):
+   
+    figure = plt.figure(figsize=(8, 8))
+    plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
+    plt.title("Confusion matrix")
+    plt.colorbar()
+    tick_marks = np.arange(len(class_names))
+    plt.xticks(tick_marks, class_names, rotation=45)
+    plt.yticks(tick_marks, class_names)
 
+    cm = np.around(cm.astype('float') / cm.sum(axis=1)[:, np.newaxis], decimals=2)
+    
+
+    threshold = cm.max()*9 / 10
+    
+    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+        color = "white" if cm[i, j] > threshold else "black"
+        plt.text(j, i, cm[i, j], horizontalalignment="center", color=color)
+        
+    plt.tight_layout()
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
+    plt.savefig("cm_start.png")
+    return figure
+
+def show_cm(data):
+    X_test = data["X_test"]
+    y_test = data["y_test"]
+    rounded_prediction = np.argmax(model_nn.predict(X_test).round(2), axis = 1)# 
+
+
+    rounded_y_test = np.argmax(y_test, axis = 1)
+
+    cm = confusion_matrix(y_true=rounded_y_test, y_pred = rounded_prediction) 
+
+    cm_plot_labels = ["0", "1"]
+    
+    plot_confusion_matrix(cm=cm, class_names = cm_plot_labels,title = "Confusion Matrix")
 #%%
 
 if __name__ == '__main__':
@@ -105,49 +142,12 @@ if __name__ == '__main__':
     data = make_train_test(make_features_nn(seasons), make_labels_nn(seasons), 0.3)    
     model_nn = make_model_nn_()
     trained_nn = train_model_nn(model_nn, data, 10, 100)
+    show_cm(data)
     save_net(trained_nn, "Tokyo_NN_start")
     print("Trained net was saved as Tokyo_NN_start")
     
     
-#%%       
-    
-# confusion matrix
 
-rounded_prediction = np.argmax(trained_nn.predict(data["X_test"]).round(2), axis = 1)# 
-
-rounded_y_test = np.argmax(data["y_test"], axis = 1)
-
-cm = confusion_matrix(y_true=rounded_y_test, y_pred = rounded_prediction)
-
-cm_plot_labels = ["0", "1"]
-
-def plot_confusion_matrix(cm, class_names, title):
-   
-    figure = plt.figure(figsize=(8, 8))
-    plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
-    plt.title("Confusion matrix")
-    plt.colorbar()
-    tick_marks = np.arange(len(class_names))
-    plt.xticks(tick_marks, class_names, rotation=45)
-    plt.yticks(tick_marks, class_names)
-    
-    # Normalize the confusion matrix.
-    cm = np.around(cm.astype('float') / cm.sum(axis=1)[:, np.newaxis], decimals=2)
-    
-    # Use white text if squares are dark; otherwise black.
-    threshold = cm.max()*9 / 10
-    
-    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-        color = "white" if cm[i, j] > threshold else "black"
-        plt.text(j, i, cm[i, j], horizontalalignment="center", color=color)
-        
-    plt.tight_layout()
-    plt.ylabel('True label')
-    plt.xlabel('Predicted label')
-    plt.savefig("cm_start.png")
-    return figure
-
-plot_confusion_matrix(cm = cm, class_names = cm_plot_labels, title = "Confusion Matrix")
     
     
     
