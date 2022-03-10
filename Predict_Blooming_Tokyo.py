@@ -61,29 +61,26 @@ def predicted_start_date(prediction):
 #%% # make prediction      
     
     
-def predict_dates_LRnn(X, model_temp, model_nn, only_start):# X: DataFrame mit 4 Spalten temp, month, day, temp_cs für 10 bzw. 30 Tage in März
+def predict_dates_LRnn(X, model_temp, model_nn, only_start):
     X = np.asarray(X).astype("float32")
-#    print(X)
-    prediction_LR = model_temp.predict(X).round(2) # linear sagt Temperaturen für April u. Mai voraus
+
+    prediction_LR = model_temp.predict(X).round(2) 
     prediction_LR_df = pd.DataFrame(prediction_LR)
-#    print(prediction_LR_df)
-    # input_nn=seasons[0].drop(['index', 'date', 'year',"flower_status"],axis='columns',inplace=False).reset_index(drop=True)
-    # input_nn = input_nn.drop(["temperature", "temp_cs"],axis='columns',inplace=False).reset_index(drop=True)
     input_nn = pd.read_pickle("dummy_df.pkl")
     input_nn["temperature"] = prediction_LR_df[0]
-    input_nn["temp_cs"]=input_nn["temperature"].cumsum() # input für model_nn
+    input_nn["temp_cs"]=input_nn["temperature"].cumsum() 
 
-    input_nn=np.asarray(input_nn).astype("float32") # model_nn sagt Daten voraus (start, full, scatter)
+    input_nn=np.asarray(input_nn).astype("float32") 
     input_nn =MinMaxScaler().fit_transform(input_nn) 
     prediction_LRnn = model_nn.predict(input_nn).round(2) 
 
     if only_start:
         dates_LRnn = predicted_start_date(prediction_LRnn)
     else:
-        dates_LRnn =predicted_dates(prediction_LRnn) # Daten in lesbarer Form
+        dates_LRnn =predicted_dates(prediction_LRnn) 
     return dates_LRnn
 
-def get_data_for_prediction(path_data, n_days,year): # only for testing with old data
+def get_data_for_prediction(path_data, n_days,year): 
     dict_year_index = make_dict_year_index(2010,2020)
     i = dict_year_index[year]
     temp_ = pd.read_csv(path_data)
