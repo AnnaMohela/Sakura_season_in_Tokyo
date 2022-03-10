@@ -7,7 +7,7 @@ Created on Wed Feb 16 14:59:04 2022
 import pandas as pd
 import numpy as np
 from tensorflow import keras
-from Sakura_Refactored import make_dict_year_index
+from STokyo_SakuraNN import make_dict_year_index
 from sklearn.preprocessing import MinMaxScaler
 import os
 
